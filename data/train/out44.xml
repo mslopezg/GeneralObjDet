@@ -1,0 +1,38 @@
+<annotation>
+	<folder>test</folder>
+	<filename>out44.jpg</filename>
+	<path>C:\Users\Manuel Lopez\AppData\Roaming\SPB_Data\AccentureCV\Tensorflow\workspace\training_demo\images\test\out44.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>960</width>
+		<height>540</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>duck</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>130</xmin>
+			<ymin>393</ymin>
+			<xmax>202</xmax>
+			<ymax>457</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>duck</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>350</xmin>
+			<ymin>316</ymin>
+			<xmax>418</xmax>
+			<ymax>413</ymax>
+		</bndbox>
+	</object>
+</annotation>
