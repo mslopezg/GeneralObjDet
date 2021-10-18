@@ -14,6 +14,6 @@ if __name__ == "__main__":
         if 'steps' in sys.argv:
             num_steps = sys.argv[sys.argv.index('steps')+1]
             api.train(num_steps)
-        else:
+        elif 'train' in sys.argv:
             api.train()
-        sys.exit()
+    sys.exit()

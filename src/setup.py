@@ -6,14 +6,9 @@ if __name__ == "__main__":
     api = ObjDetAPI()
     if len(sys.argv) >= 1:
         if 'install' in sys.argv:
-            os.system('pip install --ignore-installed --upgrade tensorflow==2.5.0 tensorflow-gpu==2.5.0')
-            os.system('pip install matplotlib')
-            os.system('pip install pyyaml')
-            os.system('pip install opencv-python')
+            os.system('pip install --ignore-installed --upgrade tensorflow==2.5.0')
             os.system('pip install cython')
-            os.system('pip install pytz')
-            os.system('pip install gin-config')
-            os.system('pip install tensorflow_addons')
+            os.system('pip install git+https://github.com/philferriere/cocoapi.git#subdirectory=PythonAPI')
         if 'skip' in sys.argv:
             flag = False # if True, skip workspace, repo, and protoc
         if sys.argv[1] == 'GPU':
