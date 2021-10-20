@@ -73,27 +73,17 @@ If there is a problem or would like more information on train setup, call:
 <b>(Optional) Step 10.</b>Evaluate the model
 <br />
 Inside \GeneralObjDet\src run:
-<pre>python test_single.py -c ckpt-1 -i image_path -s save_path -d -n 10 -t 0.7
+<pre>python test.py -c ckpt-1 -i image_path -s save_path -d -n 10 -t 0.7
 # -c specifies checkpoint to load
-# -i specifies image path
+# -i specifies input path
+# -b specifies batch or single image
 # -s specifies path to save result
 # -d specifies if images are to be displayed with cv2
+# -dn specifies the number of images to display, only on batch
 # -n specifies the number of boxes to detect on the image
 # -t specifies the threshold for boxes to be displayed
 </pre>
 If there is a problem or would like more information on test setup, call: 
-<pre>python test_single.py help
+<pre>python test.py help
 </pre>
-To evaluate a directory run:
-<pre>python test_batch.py -c ckpt-1 -i image_path -s save_path -d -dn 5 -n 10 -t 0.7
-# -c specifies checkpoint to load
-# -i specifies image path
-# -s specifies path to save result
-# -d specifies if images are to be displayed with cv2
-# -dn specifies the number of images to display
-# -n specifies the number of boxes to detect on the image
-# -t specifies the threshold for boxes to be displayed
-</pre>
-If there is a problem or would like more information on train setup, call: 
-<pre>python test_batch.py help
-</pre>
+
