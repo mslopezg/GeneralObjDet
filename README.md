@@ -15,8 +15,8 @@ General Object Detection Model Repo
 <pre>
 conda create -n tensorflow pip python=3.9
 </pre> 
-<br/>
 If fail, Anaconda Python 3.9 is not installed
+<br/>
 <br/>
 <b>Step 3.</b> Activate your virtual environment:
 <pre>
@@ -46,7 +46,8 @@ If there is a problem or would like more information on setup, for example: GPU 
 Use labelImg to annotate the images, place annotations in same folder (will be .xml files if labelImg is used)
 <pre>pip install labelImg
 </pre>
-Change generate tf records script if using a different method of annotations.
+Change generate_tfrecord.py file if using a different method of annotations.
+<br/><br/>
 <b>Step 7.</b>Obtain model
 <br/>
 Download model from <a href="https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/tf2_detection_zoo.md">Tensorflow 2 ModelZoo</a>, extract contents, and place model folder in
