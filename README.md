@@ -3,7 +3,9 @@ General Object Detection Model Repo
 
 
 # GeneralObjDet Installation Walkthrough
-<p>To train your own custom General Object Detection model, follow these steps: 
+<p>To train your own custom General Object Detection model, follow these steps: </p>
+<br />
+<p>For a more in depth tutorial on environment setup, particularly involving path variables on windows or CUDA and CUDNN installation, go to https://tensorflow-object-detection-api-tutorial.readthedocs.io/en/latest/install.html</p>
 
 ## Steps
 <br />
@@ -11,26 +13,30 @@ General Object Detection Model Repo
 <br/><br/>
 <b>Step 2.</b> Create a new virtual environment 
 <pre>
-python -m venv tensorflow
+conda create -n tensorflow pip python=3.9
 </pre> 
 <br/>
+If fail, Anaconda Python 3.9 is not installed
 <b>Step 3.</b> Activate your virtual environment
 <pre>
-source tensorflow/bin/activate # Linux
-.\tensorflow\Scripts\activate # Windows 
+conda activate tensorflow
 </pre>
 <br/>
-<b>Step 4.</b> Install dependencies and add virtual environment to the Python Kernel
+<b>Step 4.</b> Inside \GeneralObjDet\src run 
+<pre>python setup.py install
+</pre>
+If there is a problem, call 
+<pre>python setup.py help
+</pre>
+<br/>
+<b>Step 5.</b> Place images with annotations in Tensorflow/workspace/model_name/images/ as train and test folders
 <pre>
-python -m pip install --upgrade pip
-</pre>
-<br/>
-<b>Step 5.</b> Inside \GeneralObjDet\src run <pre>python setup.py install</pre>, call <pre>python setup.py help</pre> if there is a problem. 
-<br/>
-<b>Step 6.</b> Manually divide collected images into two folders train and test. So now all folders and annotations should be split between the following two folders. <br/>
-\GeneralObjDet\Tensorflow\workspace\images\train<br />
+\GeneralObjDet\Tensorflow\workspace\images\train
+ <br/>
 \GeneralObjDet\Tensorflow\workspace\images\test
-<br/><br/>
+</pre>
+Download model from <a href="https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/tf2_detection_zoo.md">Tensorflow 2 ModelZoo</a>, extract contents, and place model folder in the pre-trained-models/ folder
+<br/>
 <b>Step 7.</b> Begin training process by open
 <br /><br/>
 <b>Step 8.</b> During this process the Notebook will install Tensorflow Object Detection. You should ideally receive a notification indicating that the API has installed successfully at Step 8 with the last 
