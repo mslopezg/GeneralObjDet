@@ -25,7 +25,7 @@ source tensorflow/bin/activate # Linux
 python -m pip install --upgrade pip
 </pre>
 <br/>
-<b>Step 5.</b> Inside \GeneralObjDet\src run ```python setup.py install```, call ```python setup.py help``` if there is a problem. 
+<b>Step 5.</b> Inside \GeneralObjDet\src run <pre>python setup.py install</pre>, call <pre>python setup.py help</pre> if there is a problem. 
 <br/>
 <b>Step 6.</b> Manually divide collected images into two folders train and test. So now all folders and annotations should be split between the following two folders. <br/>
 \GeneralObjDet\Tensorflow\workspace\images\train<br />
