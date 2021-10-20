@@ -1,7 +1,3 @@
-# GeneralObjDet
-General Object Detection Model Repo
-
-
 # GeneralObjDet Installation Walkthrough
 <p>To train your own custom General Object Detection model, follow these steps: </p>
 <br />
