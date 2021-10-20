@@ -9,11 +9,6 @@ def write_grayscale(dir_path, out_path):
             a = cv2.imread(dir_path+'/'+filename, 0)
             cv2.imwrite(out_path+'/gray_'+filename,a)
             cv2.waitKey(0)
-        if filename[-3:] == 'xml':
-            dir_path = "\\".join(dir_path.split('/'))
-            out_path = "\\".join(out_path.split('/'))
-            os.system("copy "+dir_path+'\\'+filename + " " + out_path+'\\gray_'+filename)
-
 
 if __name__ == "__main__":
     if not (len(sys.argv)==3):

@@ -39,7 +39,7 @@ If there is a problem or would like more information on setup, for example: GPU 
 \GeneralObjDet\Tensorflow\workspace\images\train
 \GeneralObjDet\Tensorflow\workspace\images\test
 </pre>
-Use labelImg to annotate the images, place annotations in same folder (will be .xml files if labelImg is used)
+Use <a href="https://github.com/tzutalin/labelImg">labelImg</a> to annotate the images, place annotations in same folder (will be .xml files if labelImg is used)
 <pre>pip install labelImg
 </pre>
 Change generate_tfrecord.py file if using a different method of annotations.

@@ -203,15 +203,15 @@ class ObjDetAPI:
         image_np_with_detections = image_np.copy()
 
         viz_utils.visualize_boxes_and_labels_on_image_array(
-                    image_np_with_detections,
-                    detections['detection_boxes'],
-                    detections['detection_classes']+label_id_offset,
-                    detections['detection_scores'],
-                    category_index,
-                    use_normalized_coordinates=True,
-                    max_boxes_to_draw=num_boxes,
-                    min_score_thresh=thresh,
-                    agnostic_mode=False)          
+                            image_np_with_detections,
+                            detections['detection_boxes'],
+                            detections['detection_classes']+label_id_offset,
+                            detections['detection_scores'],
+                            category_index,
+                            use_normalized_coordinates=True,
+                            max_boxes_to_draw=int(num_boxes),
+                            min_score_thresh=float(thresh),
+                            agnostic_mode=False)
         if display:
             cv2.imshow('image',image_np_with_detections)
             print(detections['detection_scores'].max())
@@ -273,8 +273,8 @@ class ObjDetAPI:
                             detections['detection_scores'],
                             category_index,
                             use_normalized_coordinates=True,
-                            max_boxes_to_draw=num_boxes,
-                            min_score_thresh=thresh,
+                            max_boxes_to_draw=int(num_boxes),
+                            min_score_thresh=float(thresh),
                             agnostic_mode=False)
                 if display and im_num <= display_num:
                     cv2.imshow('image '+str(im_num),image_np_with_detections)
