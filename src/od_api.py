@@ -1,10 +1,16 @@
 import os
 import sys
 
-CUSTOM_MODEL_NAME = 'ducky_detector' # change   
-PRETRAINED_MODEL_NAME = 'ssd_resnet50_v1_fpn_640x640_coco17_tpu-8' # change depending on chosen model below
+# EDIT THE FOLLOWING:
+
+CUSTOM_MODEL_NAME = 'ducky_detector_mobilenet' # change   
+PRETRAINED_MODEL_NAME = 'ssd_mobilenet_v2_fpnlite_320x320_coco17_tpu-8' # change depending on chosen model below
 PRETRAINED_MODEL_URL = 'http://download.tensorflow.org/models/object_detection/tf2/20200711/ssd_resnet50_v1_fpn_640x640_coco17_tpu-8.tar.gz' # coordinate with above
 TF_RECORD_SCRIPT_NAME = 'generate_tfrecord.py'
+labels = [{'name':'duck', 'id':1}]
+
+# END EDIT
+
 LABEL_MAP_NAME = 'label_map.pbtxt'
 
 paths = {
@@ -27,8 +33,6 @@ files = {
     'TF_RECORD_SCRIPT': os.path.join(paths['SCRIPTS_PATH'], TF_RECORD_SCRIPT_NAME), 
     'LABELMAP': os.path.join(paths['ANNOTATION_PATH'], LABEL_MAP_NAME)
 }
-
-labels = [{'name':'duck', 'id':1}]
 
 
 class ObjDetAPI:
@@ -73,9 +77,14 @@ class ObjDetAPI:
             print("\n\nadd " + paths['PROTOC_PATH'] +  "\\bin to Path environment variables")
             sys.exit()
 
+    def rebuild_obj_det_api(self):
+        if os.name=='posix':  
+            os.system("cd Tensorflow/models/research && protoc object_detection/protos/*.proto --python_out=. && cp object_detection/packages/tf2/setup.py . && python -m pip install --use-feature=2020-resolver .")
+        if os.name=='nt':
+            os.system("cd Tensorflow/models/research && protoc object_detection/protos/*.proto --python_out=. && copy object_detection\\packages\\tf2\\setup.py setup.py && python -m pip install --use-feature=2020-resolver .")
+
     def verify_environment_setup(self):
-        os.system("python "+ os.path.join(paths['APIMODEL_PATH'], 'research', 'object_detection', 'builders', 'model_builder_tf2_test.py'))
-        import cv2        
+        os.system("python "+ os.path.join(paths['APIMODEL_PATH'], 'research', 'object_detection', 'builders', 'model_builder_tf2_test.py'))       
 
     def verify_gpu(self):
         import tensorflow as tf
@@ -96,11 +105,12 @@ class ObjDetAPI:
         os.system("python generate_tfrecord.py -x "+os.path.join(paths['IMAGE_PATH'], 'test')+" -l "+files['LABELMAP']+" -o "+os.path.join(paths['ANNOTATION_PATH'], 'test.record')) 
         
 
-    def update_config(self):
+    def update_config(self, num_steps=2000,batch_size = 2):
         import tensorflow as tf
         from object_detection.utils import config_util
         from object_detection.protos import pipeline_pb2
         from google.protobuf import text_format
+        # num_train_steps = epochs
 
         # copy the pipeline.config from pretrained model to the workspace model folder
         if os.name =='posix':
@@ -114,7 +124,8 @@ class ObjDetAPI:
             proto_str = f.read()                                                                                                                                                                                                                                          
             text_format.Merge(proto_str, pipeline_config) 
         pipeline_config.model.ssd.num_classes = len(labels)
-        pipeline_config.train_config.batch_size = 4
+        pipeline_config.train_config.batch_size = batch_size
+        pipeline_config.train_config.num_steps = num_steps
         pipeline_config.train_config.fine_tune_checkpoint = os.path.join(paths['PRETRAINED_MODEL_PATH'], PRETRAINED_MODEL_NAME, 'checkpoint', 'ckpt-0')
         pipeline_config.train_config.fine_tune_checkpoint_type = "detection"
         pipeline_config.train_input_reader.label_map_path= files['LABELMAP']
@@ -127,26 +138,9 @@ class ObjDetAPI:
         with tf.io.gfile.GFile(files['PIPELINE_CONFIG'], "wb") as f:                                                                                                                                                                                                                     
             f.write(config_text)
 
-    def train(self, num_steps= None):
-        import wget
-        import object_detection
-        import tensorflow as tf
-        from google.protobuf import text_format
-        from object_detection.utils import label_map_util
-        from object_detection.utils import visualization_utils as viz_utils
-        from object_detection.builders import model_builder
-        from object_detection.utils import config_util
-        from object_detection.protos import pipeline_pb2
-        from matplotlib import pyplot as plt
-        import numpy as np
-        import matplotlib
-
+    def train(self):
         TRAINING_SCRIPT = os.path.join(paths['APIMODEL_PATH'], 'research', 'object_detection', 'model_main_tf2.py')
-        # num_train_steps = epochs
-        if num_steps:
-            command = "python "+TRAINING_SCRIPT+" --model_dir="+paths['CHECKPOINT_PATH']+" --pipeline_config_path="+files['PIPELINE_CONFIG']+" --num_train_steps="+str(num_steps) # train steps edited here
-        else:
-            command = "python "+TRAINING_SCRIPT+" --model_dir="+paths['CHECKPOINT_PATH']+" --pipeline_config_path="+files['PIPELINE_CONFIG']
+        command = "python "+TRAINING_SCRIPT+" --model_dir="+paths['CHECKPOINT_PATH']+" --pipeline_config_path="+files['PIPELINE_CONFIG']
         os.system(command)
 
     
@@ -155,8 +149,6 @@ class ObjDetAPI:
         # example: 'ckpt-6'
         import os
         import tensorflow as tf
-        from object_detection.utils import label_map_util
-        from object_detection.utils import visualization_utils as viz_utils
         from object_detection.builders import model_builder
         from object_detection.utils import config_util
 
@@ -170,7 +162,7 @@ class ObjDetAPI:
 
         return detection_model
 
-    def detect_image(self,detection_model,image_path):
+    def detect_image(self,detection_model, image_path, save_path= None, display = False,num_boxes = 10, thresh = 0.7):
         import cv2 
         import numpy as np
         from matplotlib import pyplot as plt
@@ -217,20 +209,23 @@ class ObjDetAPI:
                     detections['detection_scores'],
                     category_index,
                     use_normalized_coordinates=True,
-                    max_boxes_to_draw=20,
-                    min_score_thresh=.1,
-                    agnostic_mode=False)
+                    max_boxes_to_draw=num_boxes,
+                    min_score_thresh=thresh,
+                    agnostic_mode=False)          
+        if display:
+            cv2.imshow('image',image_np_with_detections)
+            print(detections['detection_scores'].max())
+            cv2.waitKey(0)
+            cv2.destroyAllWindows()
 
-        cv2.imshow('image',image_np_with_detections)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
+        if save_path:
+            filename = image_path.split('\\')  # CHANGE HERE DEPENDING ON image_path
+            cv2.imwrite(os.path.join(save_path,'results_',filename[-1]),image_np_with_detections)
+        
 
-    def detect_batch(self,detection_model,dir_path, save_path= None, display = True):
-        # TODO: function to load batch, list of images, and perform detection
-        # savepath saves to folder
+    def detect_batch(self,detection_model,dir_path, save_path= None, display = True, display_num = 5,num_boxes = 10, thresh = 0.7):
         import cv2 
         import numpy as np
-        from matplotlib import pyplot as plt
         import os
         import tensorflow as tf
         from object_detection.utils import label_map_util
@@ -249,7 +244,6 @@ class ObjDetAPI:
             detections = detection_model.postprocess(prediction_dict, shapes)
             return detections
 
-        detected_images = []
         category_index = label_map_util.create_category_index_from_labelmap(files['LABELMAP'])
         im_num = 0
         for filename in os.listdir(dir_path):
@@ -279,16 +273,17 @@ class ObjDetAPI:
                             detections['detection_scores'],
                             category_index,
                             use_normalized_coordinates=True,
-                            max_boxes_to_draw=20,
-                            min_score_thresh=.1,
+                            max_boxes_to_draw=num_boxes,
+                            min_score_thresh=thresh,
                             agnostic_mode=False)
-                if display:
+                if display and im_num <= display_num:
                     cv2.imshow('image '+str(im_num),image_np_with_detections)
-                detected_images.append(image_np_with_detections)
+                    print(detections['detection_scores'].max())
+
+                if save_path:
+                    cv2.imwrite(os.path.join(save_path,'results_',filename),image_np_with_detections)
+
         if display:
             cv2.waitKey(0)
             cv2.destroyAllWindows()
-        if save_path:
-            #TODO save images to save path
-            pass
         
