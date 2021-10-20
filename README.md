@@ -1,4 +1,6 @@
 # GeneralObjDet Installation Walkthrough
+Walkthrough by Manuel Lopez Garza
+<br/>
 <p>To train your own custom General Object Detection model, follow these steps: </p>
 <br />
 <p>For a more in depth tutorial on environment setup, particularly involving path variables on windows or CUDA and CUDNN installation, go to https://tensorflow-object-detection-api-tutorial.readthedocs.io/en/latest/install.html</p>
