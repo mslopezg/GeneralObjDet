@@ -33,6 +33,13 @@ labels = [{'name':'class1', 'id':1},{'name':'class2', 'id':2} ] # change dependi
 If there is a problem or would like more information on setup, for example: GPU setup, call: 
 <pre>python setup.py help
 </pre>
+Inside \GeneralObjDet\src there should be a workspace with the following setup:
+<pre>
+\Tensorflow
+        \models
+        \scripts
+        \pre-trained-models
+        \workspace</pre>
 <br/>
 <b>Step 6.</b> Place images in train and test folders and collect annotations
 <pre>
