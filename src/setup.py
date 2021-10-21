@@ -19,11 +19,14 @@ if __name__ == "__main__":
     if 'install' in sys.argv:
         os.system('pip install --ignore-installed --upgrade tensorflow==2.5.0')
         os.system('pip install cython')
-        os.system('pip install git+https://github.com/philferriere/cocoapi.git#subdirectory=PythonAPI')
+        os.system('pip install git+https://github.com/philferriere/cocoapi.git#subdirectory=PythonAPI') # might need changing for eval script
+        os.system('pip install wget')
         # create folders for workspace
         api.verify_workspace()
         # install tensorflow object detection repo if not already present
         api.verify_tensorflow_repo()
+        # retrieve pretrained model from url
+        api.retrieve_pretrained()
         # verify protoc installation
         api.verify_protoc()
         # verify set up
