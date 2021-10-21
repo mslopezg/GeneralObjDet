@@ -86,4 +86,7 @@ Inside \GeneralObjDet\src run:
 If there is a problem or would like more information on test setup, call: 
 <pre>python test.py help
 </pre>
+#TODO:
+update evaluation readme, include pycocotools 2.0.2 installation eval script tensorboard and event2pandas script
+
 

@@ -5,7 +5,7 @@ import sys
 
 CUSTOM_MODEL_NAME = 'ducky_detector_mobilenet' # change   
 PRETRAINED_MODEL_NAME = 'ssd_mobilenet_v2_fpnlite_320x320_coco17_tpu-8' # change depending on chosen model below
-PRETRAINED_MODEL_URL = 'http://download.tensorflow.org/models/object_detection/tf2/20200711/ssd_resnet50_v1_fpn_640x640_coco17_tpu-8.tar.gz' # coordinate with above
+PRETRAINED_MODEL_URL = 'http://download.tensorflow.org/models/object_detection/tf2/20200711/ssd_mobilenet_v2_fpnlite_320x320_coco17_tpu-8.tar.gz' # coordinate with above
 TF_RECORD_SCRIPT_NAME = 'generate_tfrecord.py'
 labels = [{'name':'duck', 'id':1}]
 
@@ -54,14 +54,8 @@ class ObjDetAPI:
             os.system("git clone https://github.com/tensorflow/models " + paths['APIMODEL_PATH'])
 
     def verify_protoc(self):
-        if os.name=='nt':
-            try: 
-                import wget
-            except ModuleNotFoundError:
-                os.system("pip install wget")
-                import wget
+        import wget
             
-
         if os.name=='posix':  
             os.system("apt-get install protobuf-compiler")
             os.system("cd Tensorflow/models/research && protoc object_detection/protos/*.proto --python_out=. && cp object_detection/packages/tf2/setup.py . && python -m pip install .")
@@ -105,11 +99,23 @@ class ObjDetAPI:
         os.system("python generate_tfrecord.py -x "+os.path.join(paths['IMAGE_PATH'], 'test')+" -l "+files['LABELMAP']+" -o "+os.path.join(paths['ANNOTATION_PATH'], 'test.record')) 
         
 
+    def retrieve_pretrained(self):
+        import wget
+        wget.download(PRETRAINED_MODEL_URL)
+        if os.name=='posix':  
+            os.system('mv '+PRETRAINED_MODEL_NAME+'.tar.gz '+os.path.join(paths['PRETRAINED_MODEL_PATH']))
+            os.system("cd " + os.path.join(paths['PRETRAINED_MODEL_PATH']) + " && tar -xf "+PRETRAINED_MODEL_NAME+".tar.gz")
+
+        if os.name=='nt':
+            os.system('move '+PRETRAINED_MODEL_NAME+'.tar.gz '+os.path.join(paths['PRETRAINED_MODEL_PATH']))
+            os.system("cd " + os.path.join(paths['PRETRAINED_MODEL_PATH']) + " && tar -xf "+PRETRAINED_MODEL_NAME+".tar.gz")
+    
     def update_config(self, num_steps=2000,batch_size = 2):
         import tensorflow as tf
         from object_detection.utils import config_util
         from object_detection.protos import pipeline_pb2
         from google.protobuf import text_format
+        import wget
         # num_train_steps = epochs
 
         # copy the pipeline.config from pretrained model to the workspace model folder
@@ -141,6 +147,11 @@ class ObjDetAPI:
     def train(self):
         TRAINING_SCRIPT = os.path.join(paths['APIMODEL_PATH'], 'research', 'object_detection', 'model_main_tf2.py')
         command = "python "+TRAINING_SCRIPT+" --model_dir="+paths['CHECKPOINT_PATH']+" --pipeline_config_path="+files['PIPELINE_CONFIG']
+        os.system(command)
+
+    def eval(self):
+        TRAINING_SCRIPT = os.path.join(paths['APIMODEL_PATH'], 'research', 'object_detection', 'model_main_tf2.py')
+        command = "python "+TRAINING_SCRIPT+" --model_dir="+paths['CHECKPOINT_PATH']+" --pipeline_config_path="+files['PIPELINE_CONFIG']+" --checkpoint_dir="+paths['CHECKPOINT_PATH']
         os.system(command)
 
     

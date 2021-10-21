@@ -1,0 +1,17 @@
+Metric,Value
+DetectionBoxes_Precision/mAP,0.2943914830684662
+DetectionBoxes_Precision/mAP@.50IOU,0.8564291596412659
+DetectionBoxes_Precision/mAP@.75IOU,0.15186429023742676
+DetectionBoxes_Precision/mAP (small),-1.0
+DetectionBoxes_Precision/mAP (medium),0.13524025678634644
+DetectionBoxes_Precision/mAP (large),0.38288402557373047
+DetectionBoxes_Recall/AR@1,0.33469387888908386
+DetectionBoxes_Recall/AR@10,0.3510203957557678
+DetectionBoxes_Recall/AR@100,0.3510203957557678
+DetectionBoxes_Recall/AR@100 (small),-1.0
+DetectionBoxes_Recall/AR@100 (medium),0.14000000059604645
+DetectionBoxes_Recall/AR@100 (large),0.44411763548851013
+Loss/localization_loss,0.29935598373413086
+Loss/classification_loss,1.1933623552322388
+Loss/regularization_loss,0.14634869992733002
+Loss/total_loss,1.6390670537948608
